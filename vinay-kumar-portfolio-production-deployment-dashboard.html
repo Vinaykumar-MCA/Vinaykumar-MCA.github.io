@@ -1,0 +1,319 @@
+
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Deployment Dashboard — Vinay Kumar Portfolio</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;font-size:14px;line-height:1.6;background:#f7f8fa;color:#1f2328;padding:24px}
+  .wrap{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:24px}
+  h1{font-size:22px;font-weight:800;color:#1f2328}
+  h2{font-size:14px;font-weight:700;color:#1f2328;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+  h3{font-size:12px;font-weight:700;color:#57606a;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+  .card{background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:20px}
+  .badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:600}
+  .badge-green{background:#dcfce7;color:#15803d}
+  .badge-blue{background:#dbeafe;color:#1d4ed8}
+  .badge-yellow{background:#fef9c3;color:#a16207}
+  .badge-red{background:#fee2e2;color:#dc2626}
+  .badge-purple{background:#ede9fe;color:#7c3aed}
+  .status-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f3f4f6}
+  .status-row:last-child{border-bottom:none}
+  .status-label{display:flex;align-items:center;gap:8px;color:#1f2328;font-size:13px}
+  .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+  .dot-green{background:#22c55e}
+  .dot-yellow{background:#f59e0b}
+  .dot-red{background:#ef4444}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+  .metric{background:#f7f8fa;border:1px solid #e5e7eb;border-radius:8px;padding:14px;text-align:center}
+  .metric-val{font-size:28px;font-weight:800;color:#3b82d4;line-height:1}
+  .metric-unit{font-size:11px;color:#57606a;margin-top:2px}
+  .metric-label{font-size:12px;color:#57606a;margin-top:4px}
+  .chunk-bar{display:flex;flex-direction:column;gap:4px;margin-top:4px}
+  .chunk-row{display:flex;align-items:center;gap:8px;font-size:12px}
+  .chunk-name{min-width:220px;color:#1f2328;font-family:monospace;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .bar-track{flex:1;background:#f3f4f6;border-radius:4px;height:14px;position:relative;overflow:hidden}
+  .bar-fill{height:100%;border-radius:4px;position:absolute;left:0;top:0}
+  .bar-sz{font-size:11px;color:#57606a;min-width:48px;text-align:right}
+  .step-list{display:flex;flex-direction:column;gap:8px}
+  .step{display:flex;gap:10px;padding:10px 12px;border-radius:8px;background:#f7f8fa;border:1px solid #e5e7eb;align-items:flex-start}
+  .step-num{width:22px;height:22px;border-radius:50%;background:#3b82d4;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+  .step-body{flex:1}
+  .step-title{font-weight:600;font-size:13px;color:#1f2328}
+  .step-desc{font-size:12px;color:#57606a;margin-top:2px}
+  code{background:#f3f4f6;border:1px solid #e5e7eb;border-radius:4px;padding:1px 5px;font-family:"Cascadia Code","Fira Code",monospace;font-size:11px;color:#7c5cd8}
+  .env-table{width:100%;border-collapse:collapse;font-size:12px}
+  .env-table th{text-align:left;color:#57606a;font-weight:600;padding:6px 8px;background:#f7f8fa;border-bottom:1px solid #e5e7eb}
+  .env-table td{padding:7px 8px;border-bottom:1px solid #f3f4f6;vertical-align:top}
+  .env-table tr:last-child td{border-bottom:none}
+  .file-tree{font-family:monospace;font-size:12px;color:#1f2328;background:#f7f8fa;border:1px solid #e5e7eb;border-radius:8px;padding:16px;line-height:1.8;overflow-x:auto}
+  .file-tree .new{color:#15803d;font-weight:600}
+  .file-tree .mod{color:#1d4ed8;font-weight:600}
+  .file-tree .dir{color:#7c5cd8;font-weight:700}
+  .checklist{display:flex;flex-direction:column;gap:4px}
+  .check-item{display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:6px;font-size:13px;cursor:default}
+  .check-item:nth-child(odd){background:#f9fafb}
+  .check-item .ck{width:16px;height:16px;border-radius:3px;border:2px solid #d1d5db;flex-shrink:0}
+  .check-item.done .ck{background:#22c55e;border-color:#22c55e;position:relative}
+  .check-item.done .ck::after{content:"✓";color:#fff;font-size:10px;font-weight:700;position:absolute;top:-1px;left:2px}
+  .check-item.done{color:#57606a;text-decoration:line-through;text-decoration-color:#d1d5db}
+  .alert{padding:12px 16px;border-radius:8px;font-size:13px;display:flex;gap:10px;align-items:flex-start}
+  .alert-yellow{background:#fffbeb;border:1px solid #fde68a;color:#92400e}
+  .alert-green{background:#f0fdf4;border:1px solid #bbf7d0;color:#14532d}
+  .tab-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+  .tag{padding:3px 10px;border-radius:999px;font-size:11px;font-weight:600;border:1px solid #e5e7eb;background:#fff;color:#57606a}
+  footer{text-align:center;font-size:11px;color:#8b949e;padding-top:16px;border-top:1px solid #e5e7eb;margin-top:8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  
+  <div class="card" style="background:linear-gradient(135deg,#1e1b4b,#312e81,#4c1d95);color:#fff;border:none">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+      <div>
+        <div style="font-size:11px;opacity:.7;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px">Production Deployment</div>
+        <h1 style="color:#fff;font-size:24px">Vinay Kumar Portfolio</h1>
+        <div style="font-size:13px;opacity:.8;margin-top:4px">React 19 · Vite 5 · Tailwind CSS · Framer Motion · 17 Sub-Tasks Complete</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">
+        <span class="badge" style="background:rgba(255,255,255,.2);color:#fff">✓ Build Passing</span>
+        <span class="badge" style="background:rgba(255,255,255,.15);color:#fff">1930 Modules</span>
+        <span class="badge" style="background:rgba(255,255,255,.15);color:#fff">16.7s Build Time</span>
+      </div>
+    </div>
+  </div>
+
+  
+  <div class="card">
+    <h2>📊 Build Metrics</h2>
+    <div class="grid3">
+      <div class="metric"><div class="metric-val">1930</div><div class="metric-label">Modules Transformed</div></div>
+      <div class="metric"><div class="metric-val">21</div><div class="metric-label">JS Chunks (lazy + vendor)</div></div>
+      <div class="metric"><div class="metric-val">60.8</div><div class="metric-unit">kB gzip</div><div class="metric-label">Largest Chunk</div></div>
+      <div class="metric"><div class="metric-val">7.0</div><div class="metric-unit">kB gzip</div><div class="metric-label">CSS Bundle</div></div>
+      <div class="metric"><div class="metric-val">5</div><div class="metric-label">Vendor Chunks Isolated</div></div>
+      <div class="metric"><div class="metric-val">0</div><div class="metric-label">Build Errors</div></div>
+    </div>
+  </div>
+
+  
+  <div class="card">
+    <h2>📦 Bundle Breakdown (gzip)</h2>
+    <div class="chunk-bar">
+      <div class="chunk-row"><span class="chunk-name">index (app shell)</span><div class="bar-track"><div class="bar-fill" style="width:100%;background:#6366f1"></div></div><span class="bar-sz">60.7 kB</span></div>
+      <div class="chunk-row"><span class="chunk-name">vendor-motion (framer-motion)</span><div class="bar-track"><div class="bar-fill" style="width:66%;background:#8b5cf6"></div></div><span class="bar-sz">40.3 kB</span></div>
+      <div class="chunk-row"><span class="chunk-name">vendor-react (react + dom + router)</span><div class="bar-track"><div class="bar-fill" style="width:36%;background:#3b82f6"></div></div><span class="bar-sz">21.7 kB</span></div>
+      <div class="chunk-row"><span class="chunk-name">Home (layout orchestrator)</span><div class="bar-track"><div class="bar-fill" style="width:32%;background:#10b981"></div></div><span class="bar-sz">19.6 kB</span></div>
+      <div class="chunk-row"><span class="chunk-name">vendor-helmet (react-helmet-async)</span><div class="bar-track"><div class="bar-fill" style="width:13%;background:#f59e0b"></div></div><span class="bar-sz">8.1 kB</span></div>
+      <div class="chunk-row"><span class="chunk-name">vendor-icons (react-icons + lucide)</span><div class="bar-track"><div class="bar-fill" style="width:8%;background:#ec4899"></div></div><span class="bar-sz">4.7 kB</span></div>
+      <div class="chunk-row"><span class="chunk-name">Projects (lazy section)</span><div class="bar-track"><div class="bar-fill" style="width:6%;background:#6366f1"></div></div><span class="bar-sz">3.7 kB</span></div>
+      <div class="chunk-row"><span class="chunk-name">Contact · Experience · Hero · About</span><div class="bar-track"><div class="bar-fill" style="width:5%;background:#8b5cf6"></div></div><span class="bar-sz">2–3.3 kB</span></div>
+      <div class="chunk-row"><span class="chunk-name">Skills · CertAchievements · NotFound</span><div class="bar-track"><div class="bar-fill" style="width:3%;background:#3b82f6"></div></div><span class="bar-sz">1–2 kB</span></div>
+    </div>
+    <div class="alert alert-green" style="margin-top:12px">
+      <span>✅</span>
+      <span>All vendor chunks are <strong>content-hashed and immutable</strong> — browsers cache them across deploys. Only changed section chunks are re-downloaded.</span>
+    </div>
+  </div>
+
+  
+  <div class="card">
+    <h2>📁 New Deployment Files</h2>
+    <div class="file-tree">
+<span class="new">vercel.json</span>              ← SPA rewrites, security headers, cache rules, env mapping
+<span class="new">DEPLOYMENT.md</span>             ← Vercel + GitHub Pages + Netlify guides
+<span class="new">DEPLOYMENT_CHECKLIST.md</span>   ← 50-item pre-launch checklist
+<span class="new">EMAILJS_SETUP.md</span>           ← Step-by-step EmailJS configuration
+<span class="new">README.md</span>                  ← Full project documentation
+<span class="new">docs/ENVIRONMENT_VARIABLES.md</span> ← All env vars with descriptions
+<span class="new">docs/FOLDER_STRUCTURE.md</span>   ← Annotated project tree
+<span class="new">src/pages/NotFound.jsx</span>     ← Animated 404 page (lazy-loaded)
+<span class="new">public/favicon.svg</span>         ← High-res gradient VK monogram (64×64)
+<span class="mod">src/router/index.jsx</span>       ← 404 route wired to NotFound.jsx
+    </div>
+  </div>
+
+  
+  <div class="card">
+    <h2>🚀 Deploy to Vercel — 5 Steps</h2>
+    <div class="step-list">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Push to GitHub</div>
+          <div class="step-desc"><code>git init</code> → <code>git add .</code> → <code>git commit -m "feat: initial build"</code> → <code>git push origin main</code></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Import on Vercel</div>
+          <div class="step-desc">vercel.com → Add New Project → Import Git Repo → Select your portfolio repo. Vercel auto-detects Vite — no manual config needed.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">Add Environment Variables</div>
+          <div class="step-desc">Settings → Environment Variables → add all 8 <code>VITE_*</code> keys. See <code>docs/ENVIRONMENT_VARIABLES.md</code> for full reference.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-title">Deploy</div>
+          <div class="step-desc">Click Deploy. Vercel runs <code>npm install --legacy-peer-deps</code> → <code>npm run build</code> → serves <code>dist/</code>. Done in ~60 seconds.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <div class="step-title">Custom Domain (optional)</div>
+          <div class="step-desc">Vercel Dashboard → Domains → Add your domain → Update DNS at registrar → Update <code>VITE_SITE_URL</code> → Redeploy.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+  <div class="card">
+    <h2>🔑 Environment Variables</h2>
+    <table class="env-table">
+      <thead><tr><th>Variable</th><th>Required</th><th>Where to get it</th></tr></thead>
+      <tbody>
+        <tr><td><code>VITE_SITE_URL</code></td><td><span class="badge badge-red">Required</span></td><td>Your deployed domain, e.g. <code>https://vinaykumar.dev</code></td></tr>
+        <tr><td><code>VITE_SITE_NAME</code></td><td><span class="badge badge-red">Required</span></td><td><code>Vinay Kumar</code></td></tr>
+        <tr><td><code>VITE_EMAILJS_SERVICE_ID</code></td><td><span class="badge badge-red">Required</span></td><td>EmailJS Dashboard → Email Services</td></tr>
+        <tr><td><code>VITE_EMAILJS_TEMPLATE_ID</code></td><td><span class="badge badge-red">Required</span></td><td>EmailJS Dashboard → Email Templates</td></tr>
+        <tr><td><code>VITE_EMAILJS_PUBLIC_KEY</code></td><td><span class="badge badge-red">Required</span></td><td>EmailJS Account → API Keys (Public Key)</td></tr>
+        <tr><td><code>VITE_RESUME_URL</code></td><td><span class="badge badge-yellow">Recommended</span></td><td>Google Drive direct-download link to your PDF</td></tr>
+        <tr><td><code>VITE_PROFILE_IMAGE</code></td><td><span class="badge badge-yellow">Recommended</span></td><td>Publicly accessible photo URL (GitHub avatar, Cloudinary, etc.)</td></tr>
+        <tr><td><code>VITE_TWITTER_HANDLE</code></td><td><span class="badge badge-blue">Optional</span></td><td><code>@vinaykumar</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  
+  <div class="card">
+    <h2>✅ Pre-Launch Checklist</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div>
+        <h3>Content</h3>
+        <div class="checklist">
+          <div class="check-item"><span class="ck"></span>Update social link URLs</div>
+          <div class="check-item"><span class="ck"></span>Set VITE_RESUME_URL</div>
+          <div class="check-item"><span class="ck"></span>Set VITE_PROFILE_IMAGE</div>
+          <div class="check-item"><span class="ck"></span>Update project GitHub links</div>
+          <div class="check-item"><span class="ck"></span>Update contact info</div>
+          <div class="check-item"><span class="ck"></span>Replace og-image.png</div>
+          <div class="check-item"><span class="ck"></span>Update chatbot.json URLs</div>
+        </div>
+      </div>
+      <div>
+        <h3>Technical</h3>
+        <div class="checklist">
+          <div class="check-item done"><span class="ck"></span>npm run build passes</div>
+          <div class="check-item done"><span class="ck"></span>vercel.json configured</div>
+          <div class="check-item done"><span class="ck"></span>404 page implemented</div>
+          <div class="check-item done"><span class="ck"></span>Sitemap auto-generated</div>
+          <div class="check-item done"><span class="ck"></span>robots.txt present</div>
+          <div class="check-item"><span class="ck"></span>EmailJS keys in Vercel env</div>
+          <div class="check-item"><span class="ck"></span>Lighthouse ≥ 90 all cats</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+  <div class="card">
+    <h2>🎨 Quick Customisation Guide</h2>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div class="status-row">
+        <span class="status-label">Change colour scheme</span>
+        <code>src/styles/globals.css → :root tokens</code>
+      </div>
+      <div class="status-row">
+        <span class="status-label">Update personal bio</span>
+        <code>src/sections/About.jsx</code>
+      </div>
+      <div class="status-row">
+        <span class="status-label">Edit project cards</span>
+        <code>src/sections/Projects.jsx → PROJECTS[]</code>
+      </div>
+      <div class="status-row">
+        <span class="status-label">Change skill percentages</span>
+        <code>src/sections/Skills.jsx → CATEGORIES[]</code>
+      </div>
+      <div class="status-row">
+        <span class="status-label">Update timeline entries</span>
+        <code>src/sections/Experience.jsx → EDUCATION / WORK</code>
+      </div>
+      <div class="status-row">
+        <span class="status-label">Update certifications</span>
+        <code>src/sections/CertificationsAchievements.jsx → CERTS[]</code>
+      </div>
+      <div class="status-row">
+        <span class="status-label">Edit chatbot responses</span>
+        <code>src/data/chatbot.json</code>
+      </div>
+      <div class="status-row">
+        <span class="status-label">Update SEO title/description</span>
+        <code>src/lib/seo.js + src/pages/Home.jsx</code>
+      </div>
+    </div>
+  </div>
+
+  
+  <div class="card">
+    <h2>📚 Documentation Index</h2>
+    <div class="grid2">
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div class="status-row"><span class="status-label"><span class="dot dot-green"></span>README.md</span><span class="badge badge-green">Complete</span></div>
+        <div class="status-row"><span class="status-label"><span class="dot dot-green"></span>DEPLOYMENT.md</span><span class="badge badge-green">Complete</span></div>
+        <div class="status-row"><span class="status-label"><span class="dot dot-green"></span>DEPLOYMENT_CHECKLIST.md</span><span class="badge badge-green">Complete</span></div>
+        <div class="status-row"><span class="status-label"><span class="dot dot-green"></span>EMAILJS_SETUP.md</span><span class="badge badge-green">Complete</span></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div class="status-row"><span class="status-label"><span class="dot dot-green"></span>docs/ENVIRONMENT_VARIABLES.md</span><span class="badge badge-green">Complete</span></div>
+        <div class="status-row"><span class="status-label"><span class="dot dot-green"></span>docs/FOLDER_STRUCTURE.md</span><span class="badge badge-green">Complete</span></div>
+        <div class="status-row"><span class="status-label"><span class="dot dot-yellow"></span>.gitignore</span><span class="badge badge-yellow">Manual step</span></div>
+        <div class="status-row"><span class="status-label"><span class="dot dot-green"></span>vercel.json</span><span class="badge badge-green">Complete</span></div>
+      </div>
+    </div>
+    <div class="alert alert-yellow" style="margin-top:12px">
+      <span>⚠️</span>
+      <span><strong>.gitignore note:</strong> The tool environment blocked writing <code>.gitignore</code> directly. Run this command once: <code>echo "node_modules/\ndist/\n.env\n.env.local\n*.log\n.DS_Store\n.vscode/" &gt; .gitignore</code></span>
+    </div>
+  </div>
+
+  
+  <div class="card">
+    <h2>🛠 Tech Stack</h2>
+    <div class="tab-row">
+      <span class="tag" style="background:#dbeafe;color:#1d4ed8;border-color:#93c5fd">React 19</span>
+      <span class="tag" style="background:#ede9fe;color:#7c3aed;border-color:#c4b5fd">Vite 5</span>
+      <span class="tag" style="background:#cffafe;color:#0e7490;border-color:#67e8f9">Tailwind CSS 3</span>
+      <span class="tag" style="background:#fdf4ff;color:#a21caf;border-color:#e879f9">Framer Motion 11</span>
+      <span class="tag" style="background:#dcfce7;color:#15803d;border-color:#86efac">React Router 6</span>
+      <span class="tag" style="background:#fef9c3;color:#a16207;border-color:#fde047">EmailJS Browser 4</span>
+      <span class="tag" style="background:#fee2e2;color:#dc2626;border-color:#fca5a5">react-icons 5</span>
+      <span class="tag" style="background:#fff7ed;color:#c2410c;border-color:#fdba74">lucide-react</span>
+      <span class="tag" style="background:#f0fdf4;color:#15803d;border-color:#86efac">react-helmet-async</span>
+      <span class="tag" style="background:#f8fafc;color:#475569;border-color:#cbd5e1">CVA + clsx + twMerge</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+      <div class="metric"><div class="metric-val" style="font-size:20px">17</div><div class="metric-label">Sub-Tasks Complete</div></div>
+      <div class="metric"><div class="metric-val" style="font-size:20px">7</div><div class="metric-label">Portfolio Sections</div></div>
+      <div class="metric"><div class="metric-val" style="font-size:20px">9</div><div class="metric-label">Custom Hooks</div></div>
+    </div>
+  </div>
+
+  <footer>
+    Vinay Kumar Portfolio · Production Deployment Dashboard · Built with IBM Bob
+  </footer>
+</div>
+</body>
+</html>

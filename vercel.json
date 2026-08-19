@@ -1,0 +1,39 @@
+{
+  "version": 2,
+  "name": "vinay-kumar-portfolio",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "installCommand": "npm install --legacy-peer-deps",
+  "framework": "vite",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ],
+  "headers": [
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options",    "value": "nosniff"          },
+        { "key": "X-Frame-Options",           "value": "DENY"             },
+        { "key": "X-XSS-Protection",          "value": "1; mode=block"    },
+        { "key": "Referrer-Policy",           "value": "strict-origin-when-cross-origin" },
+        { "key": "Permissions-Policy",        "value": "camera=(), microphone=(), geolocation=()" }
+      ]
+    }
+  ],
+  "env": {
+    "VITE_SITE_URL":              "@vite_site_url",
+    "VITE_SITE_NAME":             "@vite_site_name",
+    "VITE_EMAILJS_SERVICE_ID":    "@vite_emailjs_service_id",
+    "VITE_EMAILJS_TEMPLATE_ID":   "@vite_emailjs_template_id",
+    "VITE_EMAILJS_PUBLIC_KEY":    "@vite_emailjs_public_key",
+    "VITE_RESUME_URL":            "@vite_resume_url",
+    "VITE_PROFILE_IMAGE":         "@vite_profile_image",
+    "VITE_TWITTER_HANDLE":        "@vite_twitter_handle"
+  }
+}
